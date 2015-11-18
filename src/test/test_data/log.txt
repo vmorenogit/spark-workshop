@@ -1,0 +1,7 @@
+ERROR	hadoop: dying for unknown reasons
+WARN	norberto, are you angry at me?
+ERROR	did java just barf?
+WARN	norberto is late
+ERROR	hadoop cluster: replace with spark cluster
+WARN	leg day recovery
+
