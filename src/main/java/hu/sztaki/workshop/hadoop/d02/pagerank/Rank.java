@@ -34,7 +34,6 @@ public class Rank extends Configured implements WritableComparable<Rank>{
         this.isOutlink = false;
     }
 
-    @Override
     public int compareTo(Rank o) {
         if (this.isOutlink && o.isOutlink){
             return -1 * this.outlink.compareTo(o.outlink);
@@ -43,14 +42,13 @@ public class Rank extends Configured implements WritableComparable<Rank>{
         return -1 * this.outlink.compareTo(o.outlink);
     }
 
-    @Override
     public void write(DataOutput dataOutput) throws IOException {
         dataOutput.writeBoolean(isOutlink);
         dataOutput.writeDouble(rank.get());
         dataOutput.writeUTF(outlink.toString());
     }
 
-    @Override
+
     public void readFields(DataInput dataInput) throws IOException {
         isOutlink = dataInput.readBoolean();
         rank = new DoubleWritable(dataInput.readDouble());

@@ -15,13 +15,12 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 /**
  * @exercise Implement the famous PageRank algorithm.
- * @input /resources/web-google-in.txt (Which is a KeyValueTextInputFormat)
+ * @input /workshop/web-google (Which is a KeyValueTextInputFormat)
  * @hint Check the input file and set configuration
  *       mapreduce.input.keyvaluelinerecordreader.key.value.separator according
  *       to the delimiter.
@@ -35,28 +34,21 @@ public class Pagerank extends Configured implements Tool {
     public static String separator = ",";
     public int iterations = 1;
 
-    public int run(String args[]) throws Exception{
+    public int run(String args[]) throws Exception {
         Configuration conf = new Configuration();
-
-        conf.set("hu.sztaki.workshop.spark.d02.pagerank.separator",
-                separator);
-        conf.set("mapreduce.input." +
-                "keyvaluelinerecordreader.key.value.separator", "#");
+        conf.set("hu.sztaki.workshop.hadoop.day3.pagerank.separator", separator);
+        conf.set("mapreduce.input.keyvaluelinerecordreader.key.value.separator", "#");
         conf.set("mapreduce.output.textoutputformat.separator", "#");
-
         iterations = Integer.parseInt(args[2]);
-        conf.setInt("hu.sztaki.workshop.spark.d02.pagerank.iterations",
-                iterations);
+        conf.setInt("hu.sztaki.workshop.hadoop.day3.pagerank.iterations", iterations);
 
         FileSystem fileSystem = FileSystem.newInstance(conf);
 
         int i = 0;
         for(; i < iterations; i++){
-            conf.setInt("hu.sztaki.workshop" +
-                    ".spark.d02.pagerank.current_iteration", i);
+            conf.setInt("hu.sztaki.workshop.hadoop.day3.pagerank.current_iteration", i);
 
             Job job = Job.getInstance(conf, "rank");
-
             job.setJarByClass(Pagerank.class);
 
             job.setMapperClass(Mapper.class);
@@ -76,7 +68,6 @@ public class Pagerank extends Configured implements Tool {
             } else {
                 input_path = args[1] + "." + (i - 1) + ".out";
             }
-
             String output_path = args[1] + "." + i + ".out";
             if(fileSystem.exists(new Path(output_path))){
                 fileSystem.delete(new Path(output_path), true);
@@ -88,13 +79,10 @@ public class Pagerank extends Configured implements Tool {
             job.waitForCompletion(true);
         }
 
-
         return 0;
     }
 
     public static void main(String[] args) throws Exception {
-        LOG.setLevel(Level.INFO);
-        LOG.info("Starting main.");
         System.exit(ToolRunner.run(new Pagerank(), args));
     }
 }
