@@ -1,11 +1,14 @@
 package hu.sztaki.workshop.spark.d03.e3
 
+import hu.sztaki.workshop.spark.d03.e3.AdvancedRDD.RichRDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 object BigramAnalysis{
-  def main (args: Array[String]){
+  def main(args: Array[String]){
     val sc = new SparkContext(
-      new SparkConf().setAppName("Bigram analysis")
+      new SparkConf()
+        .setAppName("Bigram analysis")
+        .setMaster("local")
     )
 
     val linesRDD = sc.textFile(args(0))
@@ -14,29 +17,34 @@ object BigramAnalysis{
       * @todo[1] Transform to `Bigram`s and filter invalid items.
       * @hint Use the companion object of `model.Bigram`.
       */
-    // val bigramsRDD =
+    val bigramsRDD = linesRDD
+      .flatMap(Bigram(_))
+      .filter(_.isValidBigram)
+
     /**
       * @todo[2] Total number of bigrams
       */
     println(
-      // bigramsRDD.
+      bigramsRDD.count()
     )
 
     /**
       * @todo[3] Cache bigrams.
       */
-      // bigramsRDD.
+    bigramsRDD.cache()
 
     /**
       * @todo[4] How many unique bigrams do we have?
       */
-      // val uniqeBigrams = _
+    val uniqeBigrams = bigramsRDD.distinct().count()
+    print(uniqeBigrams)
 
     /**
       * @todo[5] Count each element.
       * @hint Use the AdvancedRDD (implicitly).
       */
-      // val bgOccrCount = _
+    val bgOccrCount =
+      bigramsRDD.countEachElement
 
     /**
       * @todo[6] Number of bigrams that appear only once.
