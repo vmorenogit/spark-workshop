@@ -1,6 +1,5 @@
 package hu.sztaki.workshop.spark.d03.e3
 
-import hu.sztaki.workshop.spark.d03.e3.Bigram
 import org.apache.spark.{SparkConf, SparkContext}
 
 object BigramAnalysis{
