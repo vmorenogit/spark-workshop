@@ -50,7 +50,7 @@ object BigramAnalysis{
       * @todo[6] Number of bigrams that appear only once.
       */
     println(
-     //
+      bgOccrCount.countWhere(bgCountPair => bgCountPair._2 == 1)
     )
 
     /**
