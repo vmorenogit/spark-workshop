@@ -57,19 +57,26 @@ object BigramAnalysis{
       * @todo[7] List the top ten most frequent bigrams and their counts.
       */
     val bgOccrCountSorted = bgOccrCount.sortByDesc(_._2)
-    println(
-      bgOccrCountSorted.take(10)
-    )
+    bgOccrCountSorted.take(10).foreach(println(_))
+    bgOccrCountSorted.take(10).foreach(println)
+    bgOccrCountSorted.take(10) foreach { println }
+    bgOccrCountSorted.take(10) foreach println
+    bgOccrCountSorted take 10 foreach println
 
     /**
       * @todo[8] What fraction of all bigrams occurrences does the top ten bigrams account for?
       *          That is, what is the cumulative frequency of the top ten bigrams?
       */
-    // val totalBgCount = _
+    val totalBgCount = bgOccrCount.values.sum
 
-    // val topTenBgOccrCount = _
+    val topTenBgOccrCount = bgOccrCountSorted
+      .take(10).map(_._2).sum
 
-    // val fractionTopTenBigramOccurance = _
+    val fractionTopTenBigramOccurance = topTenBgOccrCount / totalBgCount
+
+    println(
+      fractionTopTenBigramOccurance
+    )
 
     /**
       * @todo[9*] Determine the frequency of bigrams with the same start.
