@@ -56,7 +56,10 @@ object BigramAnalysis{
     /**
       * @todo[7] List the top ten most frequent bigrams and their counts.
       */
-    // val bgOccrCountSorted = _
+    val bgOccrCountSorted = bgOccrCount.sortByDesc(_._2)
+    println(
+      bgOccrCountSorted.take(10)
+    )
 
     /**
       * @todo[8] What fraction of all bigrams occurrences does the top ten bigrams account for?
