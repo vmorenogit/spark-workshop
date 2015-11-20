@@ -14,9 +14,14 @@ object AnomalyDetection {
 
     // 1.
     // Explore data. Take some lines from the CSV file.
+    val lines = sc.textFile(args(0))
+
+    lines.take(10).foreach(println)
 
     // 2.
     // Connections are labeled. How many are there of labels (e.g. there are 972781 'normal')?
+    val lbs = lines.map(_.split(",").last).countByValue()
+    lbs.toSeq.sortBy(_._2).reverse.foreach(println)
 
     // 3.
     // Some features are nonnumeric (categorical) remove them from the parsed data.
