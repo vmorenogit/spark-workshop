@@ -56,6 +56,7 @@ class KMeansAlgorithm(data: RDD[Array[Double]], k: Int, numIterations: Int) {
         // 1. find nearest centroid for every point
         .map(p => KMeansAlgorithm.nearestCentroid(bcCentroids.value, p))
         // 2. map to (centroid_index, (point, 1)) pairs
+        .map { case (c,p) => (c.idx, (p, 1)) }
         // 3. compute the sum and count of points in one reduceByKey for the average
         // 4. count the average for each centroid: sum / count
 
