@@ -19,7 +19,7 @@ object KMeansAlgorithm extends Serializable {
 
   def nearestCentroid(centroids: Array[Centroid], p: Array[Double]): (Centroid, Array[Double]) = {
     // implement getting the nearest centroid to a point
-    val nearestCentroid = centroids.minBy(c => dist(p, c))
+    val nearestCentroid = centroids.minBy(c => dist(p, c.point))
     (nearestCentroid, p)
   }
 
