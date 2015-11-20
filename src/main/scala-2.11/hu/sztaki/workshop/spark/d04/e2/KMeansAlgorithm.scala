@@ -28,7 +28,7 @@ class KMeansAlgorithm(data: RDD[Array[Double]], k: Int, numIterations: Int) {
     data
       .takeSample(withReplacement = false, k)
       .zipWithIndex
-      .map(pair => Centroid(pair._2, pair._1))
+      .map { case (point, idx) => Centroid(idx, point) }
   }
 
   def run(): Array[Centroid] = {
