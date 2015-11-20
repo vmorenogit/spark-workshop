@@ -43,8 +43,6 @@ class KMeansAlgorithm(data: RDD[Array[Double]], k: Int, numIterations: Int) {
     // Create initial centroids with initWithRandomSample
     val initCentroids = initWithRandomSample()
 
-    initCentroids.foreach(p => println(p))
-
     // Create bcCentroids broadcast variable
     // (You can make it var)
     var bcCentroids = sc.broadcast(initCentroids)

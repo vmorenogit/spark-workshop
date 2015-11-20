@@ -26,6 +26,9 @@ object KMeansImplementation {
     val kmeans = new KMeansAlgorithm(data, numOfCentroids, numOfIterations)
     val centroids = kmeans.run()
 
+    println
+    centroids.foreach(println)
+
     // compute the squared error of the model
   }
 
