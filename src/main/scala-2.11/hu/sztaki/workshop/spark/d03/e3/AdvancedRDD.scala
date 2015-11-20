@@ -9,7 +9,9 @@ object AdvancedRDD {
       * @todo Encapsulate the logic of wordcount.
       */
     def countEachElement = {
-      // rdd.
+      rdd
+        .map(elm => (elm, 1))
+        .reduceByKey(_ + _)
     }
 
     def countWhere(f: T => Boolean): Long = {
