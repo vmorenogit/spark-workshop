@@ -40,9 +40,13 @@ object AnomalyDetection {
     // Take a look at the centroids.
     //
     // (It takes a while to build the model.)
-    val kmeans = new KMeansAlgorithm(data.map(_._2), 100, 50)
+    val kmeans = new KMeansAlgorithm(data.values, 100, 50)
 
     val centroids = kmeans.run()
+
+    val p = data.take(1).head._2
+
+    println(isAnom(23.6, centroids, p))
 
     // How many clusters are there? See how it fits to the labels.
 
@@ -62,6 +66,13 @@ object AnomalyDetection {
     // original data.
     // First define a threshold distance to centroid as the 100th furthest point from its centroid.
   }
+
+  def isAnom(threshold: Double, cent: Array[Centroid], p: Array[Double]): Bool = {
+    val nc = KMeansAlgorithm.nearestCentroid(cent, p)
+    val dist = KMeansAlgorithm.dist(nc._1.point, p)
+    dist > threshold
+  }
+
 
   def distance(a: Array[Double], b: Array[Double]) = // define distance
     null
