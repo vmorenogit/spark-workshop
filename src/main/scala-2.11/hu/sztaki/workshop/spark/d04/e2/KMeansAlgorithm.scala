@@ -6,12 +6,15 @@ object KMeansAlgorithm extends Serializable {
 
   def addPoints(v1: Array[Double], v2: Array[Double]): Array[Double] = {
     // implement adding two points
-    ???
+    val zipped = v1.zip(v2)
+    val sum = zipped.map { case (e1, e2) => e1 + e2 }
+    sum
   }
 
-  def dist(v1: Array[Double], v2: Array[Double]): Array[Double] = {
+  def dist(v1: Array[Double], v2: Array[Double]): Double = {
     // implement distance between two points
-    ???
+    val sqDist = v1.zip(v2).map { case (e1, e2) => (e1 - e2)*(e1 - e2)}.sum
+    Math.sqrt(sqDist)
   }
 
   def nearestCentroid(centroids: Array[Centroid], p: Array[Double]): (Centroid, Array[Double]) = {
@@ -43,12 +46,14 @@ class KMeansAlgorithm(data: RDD[Array[Double]], k: Int, numIterations: Int) {
 
     // Create bcCentroids broadcast variable
     // (You can make it var)
+    var bcCentroids = sc.broadcast(initCentroids)
 
     var i = 0
     while (i < numIterations) {
 
-      val newCentroids = null // create the new centroids
+      val newCentroids = data // create the new centroids
         // 1. find nearest centroid for every point
+        .map(p => nearestCentroid(bcCentroids.value, p))
         // 2. map to (centroid_index, (point, 1)) pairs
         // 3. compute the sum and count of points in one reduceByKey for the average
         // 4. count the average for each centroid: sum / count
