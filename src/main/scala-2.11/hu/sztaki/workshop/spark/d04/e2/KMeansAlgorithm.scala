@@ -58,15 +58,23 @@ class KMeansAlgorithm(data: RDD[Array[Double]], k: Int, numIterations: Int) {
         // 2. map to (centroid_index, (point, 1)) pairs
         .map { case (c,p) => (c.idx, (p, 1)) }
         // 3. compute the sum and count of points in one reduceByKey for the average
+        .reduceByKey {
+          case ((s1, c1), (s2, c2)) =>
+           (KMeansAlgorithm.addPoints(s1, s2), c1 + c2)
+        }
+        .map { case (idx, (sum, cnt)) =>
+          Centroid(idx, sum.map( _ / cnt))
+        }
         // 4. count the average for each centroid: sum / count
 
+      bcCentroids = sc.broadcast(newCentroids.collect())
       // broadcast the new centroids (use bcCentroids var again)
 
       i += 1
     }
 
     // return the finally got centroids
-    ???
+    bcCentroids.value
   }
 
 }
