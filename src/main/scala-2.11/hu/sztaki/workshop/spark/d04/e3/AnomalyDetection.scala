@@ -20,8 +20,10 @@ object AnomalyDetection {
 
     // 2.
     // Connections are labeled. How many are there of labels (e.g. there are 972781 'normal')?
+/*
     val lbs = lines.map(_.split(",").last).countByValue()
     lbs.toSeq.sortBy(_._2).reverse.foreach(println)
+*/
 
     // 3.
     // Some features are nonnumeric (categorical) remove them from the parsed data.
@@ -38,6 +40,9 @@ object AnomalyDetection {
     // Take a look at the centroids.
     //
     // (It takes a while to build the model.)
+    val kmeans = new KMeansAlgorithm(data.map(_._2), 100, 50)
+
+    val centroids = kmeans.run()
 
     // How many clusters are there? See how it fits to the labels.
 
