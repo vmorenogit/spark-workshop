@@ -67,7 +67,7 @@ object AnomalyDetection {
     // First define a threshold distance to centroid as the 100th furthest point from its centroid.
   }
 
-  def isAnom(threshold: Double, cent: Array[Centroid], p: Array[Double]): Bool = {
+  def isAnom(threshold: Double, cent: Array[Centroid], p: Array[Double]): Boolean = {
     val nc = KMeansAlgorithm.nearestCentroid(cent, p)
     val dist = KMeansAlgorithm.dist(nc._1.point, p)
     dist > threshold
