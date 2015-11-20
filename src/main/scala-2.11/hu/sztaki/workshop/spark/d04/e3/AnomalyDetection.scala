@@ -27,7 +27,12 @@ object AnomalyDetection {
     // Some features are nonnumeric (categorical) remove them from the parsed data.
     // Parse the other features as numeric data (Array[Double][Double]).
 
-    val data = null
+    val data = lines.map { line =>
+      val buf = line.split(",").toBuffer
+      buf.remove(1, 3)
+      val label = buf.remove(buf.length - 1)
+      (label, buf.map(_.toDouble).toArray)
+    }
 
     // Build a KMeans model with 10 centroids.
     // Take a look at the centroids.
