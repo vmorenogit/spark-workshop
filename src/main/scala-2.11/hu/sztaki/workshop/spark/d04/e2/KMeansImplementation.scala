@@ -11,23 +11,25 @@ object KMeansImplementation {
       .setMaster("local[1]"))
 
     // Load and parse the data
-    // Create dense Vectors of Double
+    val rawData = sc.textFile(args(0))
+
+    val data = rawData.map(_.split(' ').map(_.toDouble))
 
     // Print the RDD to see it working
+    data.collect().foreach(arr => println(arr.mkString(",")))
 
     // implement KMeans (take RDD, numClusters, numIterations)
 
     val numOfCentroids = 2
     val numOfIterations = 10
-    
-    val centroids = null
+
+    val kmeans = new KMeansAlgorithm(data, numOfCentroids, numOfIterations)
+    val centroids = kmeans.run()
+
+    println
+    centroids.foreach(println)
 
     // compute the squared error of the model
-
-    // Now instead of the own implementation
-    // use MLlib (KMeans.train) to create the centroids
-
-    // Check the squared error on your data (KMeansModel.computCost)
   }
 
 }
