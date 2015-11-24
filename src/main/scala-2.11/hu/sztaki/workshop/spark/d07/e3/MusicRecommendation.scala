@@ -27,15 +27,31 @@ object MusicRecommendation {
 
     rawArtistData.take(10).foreach(println)
 
-    val artistData = rawArtistData.map { line =>
+/*    val artistData = rawArtistData.map { line =>
       val (id, name) = line.span(_ != '\t')
       (id.toInt, name.trim)
+    }*/
+
+
+    // 4. Some lines are corrupted,
+    // they cause a NumberFormatException
+    // Avoid these lines. (Using Option: Some / None)
+    val artistData = rawArtistData.flatMap { line =>
+      val (id, name) = line.span(_ != '\t')
+
+      if (name.isEmpty) {
+        Iterator()
+      } else {
+        try {
+          val pair = (id.toInt, name.trim)
+          Iterator(pair)
+        } catch {
+          case e: NumberFormatException => Iterator()
+        }
+      }
     }
 
     artistData.collect().foreach(println)
-
-    // 4. Some lines are corrupted, they cause a NumberFormatException
-    // Avoid these lines. (Using Option: Some / None)
 
     // 5. Some artist names are misspelled.
     // There are artist aliases to overcome this.
