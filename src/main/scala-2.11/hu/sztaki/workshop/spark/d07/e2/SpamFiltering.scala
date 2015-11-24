@@ -24,14 +24,18 @@ object SpamFiltering {
     // Create a HashingTF instance to map email text to vectors of 100 features.
     val tf = new HashingTF(100)
 
-    val spamFeatures =
-      spam.map(email => tf.transform(email.split(' ')))
+    // Each email is split into words, and each word is mapped to one feature.
     val hamFeatures =
       ham.map(email => tf.transform(email.split(' ')))
-
-    // Each email is split into words, and each word is mapped to one feature.
+    val spamFeatures =
+      spam.map(email => tf.transform(email.split(' ')))
 
     // Create LabeledPoint datasets for positive (spam) and negative (ham) examples.
+
+    // spam
+    val labSpam = spamFeatures.map(LabeledPoint(1, _))
+    // ham
+    val labHam = hamFeatures.map(LabeledPoint(0, _))
 
     // Cache data since Logistic Regression is an iterative algorithm.
 
