@@ -16,7 +16,10 @@ object MusicRecommendation {
     val artistAliasFile = args(2)
 
     // 1. Load user artist data
-    val rawUserArtistData = null
+    val rawUserArtistData =
+      sc.textFile(userArtistDataFile)
+
+    rawUserArtistData.take(10).foreach(println)
 
     // 2. Explore user and artist data
 

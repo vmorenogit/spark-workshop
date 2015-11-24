@@ -62,6 +62,17 @@ object SpamFiltering {
       model.predict(
         tf.transform(negExample.split(' '))))
 
+    model.clearThreshold()
+
+    println("pos example: " +
+      model.predict(
+        tf.transform(posExample.split(' '))))
+
+    println("neg example: " +
+      model.predict(
+        tf.transform(negExample.split(' '))))
+
+
     // Now use the learned model to predict spam/ham for new emails.
   }
 }
