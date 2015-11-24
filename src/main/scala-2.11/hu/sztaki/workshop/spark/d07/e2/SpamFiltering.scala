@@ -15,6 +15,11 @@ object SpamFiltering {
 
     // Load 2 types of emails from text files: spam and ham (non-spam).
     // Each line has text from one email.
+    val spam = sc.textFile(args(0))
+    val ham = sc.textFile(args(1))
+
+    spam.collect().foreach(println)
+    ham.collect().foreach(println)
 
     // Create a HashingTF instance to map email text to vectors of 100 features.
 
