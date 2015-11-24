@@ -37,16 +37,30 @@ object SpamFiltering {
     // ham
     val labHam = hamFeatures.map(LabeledPoint(0, _))
 
+    val trainingData = labSpam ++ labHam
+
     // Cache data since Logistic Regression is an iterative algorithm.
 
     // Create a Logistic Regression learner.
-
-    // Run the actual learning algorithm on the training data.
+    // Run the actual learning algorithm on
+    // the training data.
+    val logReg = new LogisticRegressionWithSGD()
+    val model = logReg.run(trainingData)
 
     // Test on a positive example (spam) and a negative one (ham).
     // First apply the same HashingTF feature transformation used on the training data.
-    val posExample = "O M G GET cheap stuff by sending money to ..."
-    val negExample = "Hi Dad, I started studying Spark the other ..."
+    val posExample =
+      "O M G GET cheap stuff by sending money to ..."
+    val negExample =
+      "Hi Dad, I started studying Spark the other ..."
+
+    println("pos example: " +
+      model.predict(
+        tf.transform(posExample.split(' '))))
+
+    println("neg example: " +
+      model.predict(
+        tf.transform(negExample.split(' '))))
 
     // Now use the learned model to predict spam/ham for new emails.
   }
