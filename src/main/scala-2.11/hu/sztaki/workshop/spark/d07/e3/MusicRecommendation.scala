@@ -85,21 +85,27 @@ object MusicRecommendation {
           aliasBv.value.getOrElse(artistId, artistId)
         Rating(userId, goodId, rating)
       }
-    }
+    }.cache()
 
     // 7. Build an ALS model.
     // Use the following parameters:
     // rank = 10, iterations = 5,
     // lambda = 0.01, alpha = 1.0
+    val model =
+      ALS.trainImplicit(ratings, 10, 5, 0.01, 1.0)
 
     // 8. Print a user feature vector.
 
     // 9. Check what user number 2038659 listens to
     // Print artist names.
 
-    // 10. Make five recommendations to the same user.
+    // 10. Make five recommendations
+    // to the same user.
     // Print artist names.
+    val recs =
+      model.recommendProducts(2038659, 5)
 
+    recs.foreach(println)
     // 11. Split data to training and evaluation data.
     // Use Utils.areUnderCurve to mease the performance of ALS
 
