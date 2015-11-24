@@ -92,7 +92,7 @@ object MusicRecommendation {
     // rank = 10, iterations = 5,
     // lambda = 0.01, alpha = 1.0
     val model =
-      ALS.trainImplicit(ratings, 10, 5, 0.01, 1.0)
+      ALS.trainImplicit(ratings, 10, 5, 0.05, 0.7)
 
     // 8. Print a user feature vector.
 
@@ -106,8 +106,9 @@ object MusicRecommendation {
       model.recommendProducts(2038659, 5)
 
     recs.foreach(println)
+
     // 11. Split data to training and evaluation data.
-    // Use Utils.areUnderCurve to mease the performance of ALS
+    // Use Utils.areaUnderCurve to mease the performance of ALS
 
     // 12. Implement predictMostListened function and compare it to the ALS recommendation.
 
