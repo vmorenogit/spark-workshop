@@ -57,7 +57,18 @@ object MusicRecommendation {
     // There are artist aliases to overcome this.
     // Create a simple map
     // of "bad" artist ids to "good" artist ids
-    val rawArtistAlias = null
+    val rawArtistAlias =
+      sc.textFile(artistAliasFile)
+
+    val artistAliases =
+      rawArtistAlias.flatMap { line =>
+        val tokens = line.split("\t")
+        if (tokens(0).isEmpty) {
+          Iterator()
+        } else {
+          Iterator( (tokens(0).toInt, tokens(1).toInt) )
+        }
+      }.collect().toMap
 
     // 6. Broadcast the artist aliases.
     // Create a rating with using the good artist id.
