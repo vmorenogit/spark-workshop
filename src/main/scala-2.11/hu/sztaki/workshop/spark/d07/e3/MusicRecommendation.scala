@@ -19,12 +19,20 @@ object MusicRecommendation {
     val rawUserArtistData =
       sc.textFile(userArtistDataFile)
 
-    rawUserArtistData.take(10).foreach(println)
-
     // 2. Explore user and artist data
 
     // 3. Load the artist ids and names to an RDD[(Int, String)] from artist data
-    val rawArtistData = null
+    val rawArtistData =
+      sc.textFile(artistDataFile)
+
+    rawArtistData.take(10).foreach(println)
+
+    val artistData = rawArtistData.map { line =>
+      val (id, name) = line.span(_ != '\t')
+      (id.toInt, name.trim)
+    }
+
+    artistData.collect().foreach(println)
 
     // 4. Some lines are corrupted, they cause a NumberFormatException
     // Avoid these lines. (Using Option: Some / None)
