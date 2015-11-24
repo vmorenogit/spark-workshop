@@ -60,7 +60,7 @@ object AnomalyDetection {
     // Run with k = 30, 40 ... 100
 
     // Standardize the data and run again with k = 60, 70 .. 120
-    val standardizer: Array[Double] => Array[Double] = buildNormalizationFunction(data)
+    //    val standardizer: Array[Double] => Array[Double] = buildNormalizationFunction(data)
 
     // Use an ideal k to build the model on the whole data set and find anomalies in the
     // original data.

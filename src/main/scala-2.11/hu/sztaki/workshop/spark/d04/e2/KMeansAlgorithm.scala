@@ -30,7 +30,7 @@ class KMeansAlgorithm(data: RDD[Array[Double]], k: Int, numIterations: Int) {
   private def initWithRandomSample(): Array[Centroid] = {
     // Choose k points from the data randomly to create centroids
     data
-      .takeSample(withReplacement = false, k)
+      .takeSample(false, k)
       .zipWithIndex
       .map { case (point, idx) => Centroid(idx, point) }
   }
