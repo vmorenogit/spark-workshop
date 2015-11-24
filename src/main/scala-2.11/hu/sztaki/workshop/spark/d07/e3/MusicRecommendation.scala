@@ -19,7 +19,7 @@ object MusicRecommendation {
     val rawUserArtistData =
       sc.textFile(userArtistDataFile)
 
-    rawUserArtistData.map { line =>
+    val userArtistData = rawUserArtistData.map { line =>
       val ts = line.split(" ")
       (ts(0).toInt, ts(1).toInt, ts(2).toDouble)
     }
@@ -79,7 +79,13 @@ object MusicRecommendation {
 
     val aliasBv = sc.broadcast(artistAliases)
 
-
+    val ratings = userArtistData.map {
+      case (userId, artistId, rating) => {
+        val goodId =
+          aliasBv.value.getOrElse(artistId, artistId)
+        Rating(userId, goodId, rating)
+      }
+    }
 
     // 7. Build an ALS model.
     // Use the following parameters:
