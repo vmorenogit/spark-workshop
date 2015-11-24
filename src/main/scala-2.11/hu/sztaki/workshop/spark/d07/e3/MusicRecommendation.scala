@@ -19,13 +19,16 @@ object MusicRecommendation {
     val rawUserArtistData =
       sc.textFile(userArtistDataFile)
 
+    rawUserArtistData.map { line =>
+      val ts = line.split(" ")
+      (ts(0).toInt, ts(1).toInt, ts(2).toDouble)
+    }
+
     // 2. Explore user and artist data
 
     // 3. Load the artist ids and names to an RDD[(Int, String)] from artist data
     val rawArtistData =
       sc.textFile(artistDataFile)
-
-    rawArtistData.take(10).foreach(println)
 
 /*    val artistData = rawArtistData.map { line =>
       val (id, name) = line.span(_ != '\t')
@@ -51,8 +54,6 @@ object MusicRecommendation {
       }
     }
 
-    artistData.collect().foreach(println)
-
     // 5. Some artist names are misspelled.
     // There are artist aliases to overcome this.
     // Create a simple map
@@ -73,6 +74,12 @@ object MusicRecommendation {
     // 6. Broadcast the artist aliases.
     // Create a rating with using the good artist id.
     // A user rate should be the number it listened to an artist.
+
+    // RDD[Rating(userId, artistId, numOfListens)]
+
+    val aliasBv = sc.broadcast(artistAliases)
+
+
 
     // 7. Build an ALS model.
     // Use the following parameters:
