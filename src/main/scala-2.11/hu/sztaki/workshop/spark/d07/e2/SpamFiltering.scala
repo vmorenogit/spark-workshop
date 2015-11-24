@@ -22,6 +22,12 @@ object SpamFiltering {
     ham.collect().foreach(println)
 
     // Create a HashingTF instance to map email text to vectors of 100 features.
+    val tf = new HashingTF(100)
+
+    val spamFeatures =
+      spam.map(email => tf.transform(email.split(' ')))
+    val hamFeatures =
+      ham.map(email => tf.transform(email.split(' ')))
 
     // Each email is split into words, and each word is mapped to one feature.
 
