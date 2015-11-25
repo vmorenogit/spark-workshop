@@ -69,7 +69,11 @@ object PropertyGraphExample {
     // readable form (i.e. names,
     // vertex attributes, edge attributes).
     // Use Graph.triplets.
-    graph.triplets
+    val nice = graph.triplets.map { tr =>
+      tr.srcAttr + " " + tr.attr + " " + tr.dstAttr
+    }
+
+    nice.collect().foreach(println)
 
 
     // Get the out degree of everything.
