@@ -65,8 +65,12 @@ object PropertyGraphExample {
 
     println(cnt)
 
-    // Print the edges in readable form (i.e. names, vertex attributes, edge attributes).
+    // Print the edges in
+    // readable form (i.e. names,
+    // vertex attributes, edge attributes).
     // Use Graph.triplets.
+    graph.triplets
+
 
     // Get the out degree of everything.
     // Use Graph.outDegrees and Graph.outerJoinVertices
