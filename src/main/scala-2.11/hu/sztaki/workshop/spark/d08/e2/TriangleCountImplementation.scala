@@ -14,12 +14,15 @@ object TriangleCountImplementation {
 
     val edgeFile = args(0)
 
-    // Load graph with GraphLoader.edgeListFile
+    // 1. Load graph with GraphLoader.edgeListFile
 
-    // Create undirected graph where edges are like src < dst
+    // 2. Create undirected graph where
+    // edges are like src < dst
 
-    // Send from src to dst all neighbor that satisfies neighbor < src < dst
+    // 3. Send from src to dst all neighbor
+    // that satisfies neighbor < src < dst
 
-    // Intersect the got vertexIds with the neighbors. You get the triangle count :)
+    // 4. Intersect the got vertexIds with
+    // the neighbors. You get the triangle count :)
   }
 }
