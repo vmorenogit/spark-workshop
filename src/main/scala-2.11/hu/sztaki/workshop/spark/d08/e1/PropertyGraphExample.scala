@@ -60,6 +60,10 @@ object PropertyGraphExample {
     persons.collect().foreach(println)
 
     // Count the edges where src > dst
+    val cnt = graph.edges.filter(e => e.srcId > e.dstId)
+      .count()
+
+    println(cnt)
 
     // Print the edges in readable form (i.e. names, vertex attributes, edge attributes).
     // Use Graph.triplets.
