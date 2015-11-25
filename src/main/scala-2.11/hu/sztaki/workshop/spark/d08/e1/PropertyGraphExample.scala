@@ -28,14 +28,28 @@ object PropertyGraphExample {
     */
 
     // RDD of vertices
-    val users: RDD[(VertexId, (String, String))] =
-      null
+    val vertices: RDD[(VertexId, (String, String))] =
+      sc.parallelize(Array(
+        (1L, ("apple", "sweet")),
+        (2L, ("pear", "sweet")),
+        (3L, ("banana", "tasty")),
+        (4L, ("anna", "person")),
+        (5L, ("george", "person"))
+      )
+      )
 
     // RDD of edges
-    val relationships: RDD[Edge[String]] =
-      null
+    val edges: RDD[Edge[String]] = sc.parallelize(
+      Array(
+        Edge(1L, 2L, "similar to"),
+        Edge(4L, 2L, "eats"),
+        Edge(5L, 3L, "likes"),
+        Edge(5L, 4L, "is friend of")
+      )
+    )
 
     // Build graph
+    val graph = Graph(vertices, edges)
 
     // Count the number of persons
 
