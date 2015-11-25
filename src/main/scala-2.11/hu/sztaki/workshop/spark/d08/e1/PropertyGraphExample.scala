@@ -75,9 +75,20 @@ object PropertyGraphExample {
 
     nice.collect().foreach(println)
 
-
     // Get the out degree of everything.
     // Use Graph.outDegrees and Graph.outerJoinVertices
+    val degs = graph.outDegrees
+
+//      .collect().foreach(println)
+
+    val joined = graph.joinVertices(degs) {
+      case (vId, v, deg) =>
+        (v._1,
+        v._2 + " deg: " + deg)
+    }
+
+    joined.vertices.collect().foreach(println)
+
   }
 
 }
