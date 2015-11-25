@@ -52,6 +52,12 @@ object PropertyGraphExample {
     val graph = Graph(vertices, edges)
 
     // Count the number of persons
+    val persons = graph.vertices.filter{
+      case (id, (name, prop)) =>
+        prop == "person"
+    }
+
+    persons.collect().foreach(println)
 
     // Count the edges where src > dst
 
