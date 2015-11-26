@@ -22,7 +22,7 @@ object StreamingLogInput {
       * @todo[2] Create a DStream from all the input on port 7777.
       * @hint You need to create a socket listener.
       */
-    val input = ssc.socketTextStream("localhost", 7777)
+    val input = ssc.socketTextStream("localhost", 9999)
     val errorLines = processLines(input)
 
     /**
