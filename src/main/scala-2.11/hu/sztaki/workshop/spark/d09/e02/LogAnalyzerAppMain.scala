@@ -1,5 +1,6 @@
 package hu.sztaki.workshop.spark.d09.e02
 
+import hu.sztaki.workshop.hadoop.d02.ApacheAccessLog
 import org.apache.spark._
 import org.apache.spark.streaming._
 
@@ -48,40 +49,48 @@ object LogAnalyzerAppMain {
     /**
       * @todo[1] Use the parser to parse configuration.
       */
+    val opts = parser.parse(args, new Config()).get
 
     /**
       * @todo[2] Create the Spark configuration.
       */
+    val conf = new SparkConf()
+      .setAppName("LogAnalyzer great app")
+      .setMaster("local")
 
     /**
       * @todo[3] Create Streaming context.
       */
+    val ssc = new StreamingContext(conf, opts.windowDuration)
 
     /**
       * @todo[4] Configure checkpointing (read from options, checkpoint directory).
       */
+    ssc.checkpoint(opts.CheckpointDirectory)
 
     /**
       * @todo[5] Monitor the directory for new files.
       * @hint You need to create some sort of DStream. Which one?
       */
+    val logData = ssc.textFileStream(opts.LogsDirectory)
 
     /**
       * @todo[6] Transform each log line into an ApacheAccessLog.
       * @hint Look at the static methods of ApacheAccessLog (Java) class.
       */
+    val accessLogDStream = logData.map(line => ApacheAccessLog.parseFromLogLine(line)).cache()
 
     /**
       * @todo Complete function!
       */
-    // LogAnalyzerTotal.processAccessLogs(accessLogDStream)
+    LogAnalyzerTotal.processAccessLogs(accessLogDStream)
 
     /**
       * @todo Complete function!
       */
     // LogAnalyzerWindowed.processAccessLogs(accessLogDStream, opts)
 
-    // ssc.start()
-    // ssc.awaitTermination()
+    ssc.start()
+    ssc.awaitTermination()
   }
 }

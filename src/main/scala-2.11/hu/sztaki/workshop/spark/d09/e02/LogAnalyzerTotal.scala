@@ -21,6 +21,7 @@ object LogAnalyzerTotal {
       * @todo[7] Count the frequency for each IP address.
       */
 
+
     /**
       * @todo[8] Do the same:
       *          Count the frequency for each IP address,
