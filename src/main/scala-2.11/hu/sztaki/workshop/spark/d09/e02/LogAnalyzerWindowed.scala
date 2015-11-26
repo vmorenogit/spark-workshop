@@ -1,5 +1,6 @@
 package hu.sztaki.workshop.spark.d09.e02
 
+import hu.sztaki.workshop.hadoop.d02.ApacheAccessLog
 import hu.sztaki.workshop.spark.d03.e3.AdvancedRDD.RichRDD
 import org.apache.spark._
 import org.apache.spark.rdd._

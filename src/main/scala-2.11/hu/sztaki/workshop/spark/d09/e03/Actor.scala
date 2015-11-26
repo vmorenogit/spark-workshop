@@ -1,7 +1,6 @@
 package hu.sztaki.workshop.spark.d09.e03
 
 import hu.sztaki.workshop.spark.d09.e03.{UnsubscribeReceiver, SubscribeReceiver}
-import org.apache.spark.actor.Utils
 
 import scala.collection.mutable.LinkedList
 import scala.reflect.ClassTag
@@ -93,6 +92,7 @@ object FeederActor {
     val Seq(host, port) = args.toSeq
 
     val conf = new SparkConf
+    /*
     val actorSystem = Utils.get.createActorSystem("test", host, port.toInt, conf = conf,
       securityManager = Utils.security(conf))._1
     val feeder = actorSystem.actorOf(Props[FeederActor], "FeederActor")
@@ -100,6 +100,7 @@ object FeederActor {
     println("Feeder started as:" + feeder)
 
     actorSystem.awaitTermination()
+    */
   }
 }
 

@@ -1,5 +1,6 @@
 package hu.sztaki.workshop.spark.d09.e02
 
+import hu.sztaki.workshop.hadoop.d02.ApacheAccessLog
 import org.apache.spark.streaming.dstream._
 
 /**
@@ -12,7 +13,7 @@ object LogAnalyzerTotal {
       * @hint Learn about Option.
       * @hint Return with the updated state (Some).
       */
-
+    Some(1L)
   }
 
   def processAccessLogs(accessLogsDStream: DStream[ApacheAccessLog]) {
