@@ -20,7 +20,10 @@ object LogAnalyzerTotal {
     /**
       * @todo[7] Count the frequency for each IP address.
       */
-
+    val ipDStream = accessLogsDStream
+      .map(entry => (entry.getIpAddress, 1))
+      .reduceByKey(_ + _)
+      .print()
 
     /**
       * @todo[8] Do the same:
