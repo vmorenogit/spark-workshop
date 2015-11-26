@@ -68,6 +68,5 @@ object LogAnalyzerWindowed {
       *           Use DStream.`reduceByKeyAndWindow`.
       *           Print out the results.
       */
-
   }
 }
