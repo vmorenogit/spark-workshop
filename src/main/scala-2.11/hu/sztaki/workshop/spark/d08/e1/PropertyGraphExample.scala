@@ -28,24 +28,67 @@ object PropertyGraphExample {
     */
 
     // RDD of vertices
-    val users: RDD[(VertexId, (String, String))] =
-      null
+    val vertices: RDD[(VertexId, (String, String))] =
+      sc.parallelize(Array(
+        (1L, ("apple", "sweet")),
+        (2L, ("pear", "sweet")),
+        (3L, ("banana", "tasty")),
+        (4L, ("anna", "person")),
+        (5L, ("george", "person"))
+      )
+      )
 
     // RDD of edges
-    val relationships: RDD[Edge[String]] =
-      null
+    val edges: RDD[Edge[String]] = sc.parallelize(
+      Array(
+        Edge(1L, 2L, "similar to"),
+        Edge(4L, 2L, "eats"),
+        Edge(5L, 3L, "likes"),
+        Edge(5L, 4L, "is friend of")
+      )
+    )
 
     // Build graph
+    val graph = Graph(vertices, edges)
 
     // Count the number of persons
+    val persons = graph.vertices.filter{
+      case (id, (name, prop)) =>
+        prop == "person"
+    }
+
+    persons.collect().foreach(println)
 
     // Count the edges where src > dst
+    val cnt = graph.edges.filter(e => e.srcId > e.dstId)
+      .count()
 
-    // Print the edges in readable form (i.e. names, vertex attributes, edge attributes).
+    println(cnt)
+
+    // Print the edges in
+    // readable form (i.e. names,
+    // vertex attributes, edge attributes).
     // Use Graph.triplets.
+    val nice = graph.triplets.map { tr =>
+      tr.srcAttr + " " + tr.attr + " " + tr.dstAttr
+    }
+
+    nice.collect().foreach(println)
 
     // Get the out degree of everything.
     // Use Graph.outDegrees and Graph.outerJoinVertices
+    val degs = graph.outDegrees
+
+//      .collect().foreach(println)
+
+    val joined = graph.joinVertices(degs) {
+      case (vId, v, deg) =>
+        (v._1,
+        v._2 + " deg: " + deg)
+    }
+
+    joined.vertices.collect().foreach(println)
+
   }
 
 }

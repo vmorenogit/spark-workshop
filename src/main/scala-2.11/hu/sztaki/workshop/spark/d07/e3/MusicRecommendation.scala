@@ -19,13 +19,16 @@ object MusicRecommendation {
     val rawUserArtistData =
       sc.textFile(userArtistDataFile)
 
+    val userArtistData = rawUserArtistData.map { line =>
+      val ts = line.split(" ")
+      (ts(0).toInt, ts(1).toInt, ts(2).toDouble)
+    }
+
     // 2. Explore user and artist data
 
     // 3. Load the artist ids and names to an RDD[(Int, String)] from artist data
     val rawArtistData =
       sc.textFile(artistDataFile)
-
-    rawArtistData.take(10).foreach(println)
 
 /*    val artistData = rawArtistData.map { line =>
       val (id, name) = line.span(_ != '\t')
@@ -51,33 +54,61 @@ object MusicRecommendation {
       }
     }
 
-    artistData.collect().foreach(println)
-
     // 5. Some artist names are misspelled.
     // There are artist aliases to overcome this.
     // Create a simple map
     // of "bad" artist ids to "good" artist ids
-    val rawArtistAlias = null
+    val rawArtistAlias =
+      sc.textFile(artistAliasFile)
+
+    val artistAliases =
+      rawArtistAlias.flatMap { line =>
+        val tokens = line.split("\t")
+        if (tokens(0).isEmpty) {
+          Iterator()
+        } else {
+          Iterator( (tokens(0).toInt, tokens(1).toInt) )
+        }
+      }.collect().toMap
 
     // 6. Broadcast the artist aliases.
     // Create a rating with using the good artist id.
     // A user rate should be the number it listened to an artist.
 
+    // RDD[Rating(userId, artistId, numOfListens)]
+
+    val aliasBv = sc.broadcast(artistAliases)
+
+    val ratings = userArtistData.map {
+      case (userId, artistId, rating) => {
+        val goodId =
+          aliasBv.value.getOrElse(artistId, artistId)
+        Rating(userId, goodId, rating)
+      }
+    }.cache()
+
     // 7. Build an ALS model.
     // Use the following parameters:
     // rank = 10, iterations = 5,
     // lambda = 0.01, alpha = 1.0
+    val model =
+      ALS.trainImplicit(ratings, 10, 5, 0.05, 0.7)
 
     // 8. Print a user feature vector.
 
     // 9. Check what user number 2038659 listens to
     // Print artist names.
 
-    // 10. Make five recommendations to the same user.
+    // 10. Make five recommendations
+    // to the same user.
     // Print artist names.
+    val recs =
+      model.recommendProducts(2038659, 5)
+
+    recs.foreach(println)
 
     // 11. Split data to training and evaluation data.
-    // Use Utils.areUnderCurve to mease the performance of ALS
+    // Use Utils.areaUnderCurve to mease the performance of ALS
 
     // 12. Implement predictMostListened function and compare it to the ALS recommendation.
 
