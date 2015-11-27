@@ -19,6 +19,7 @@ object Sales {
     /**
       * @todo[9] Transform lines to SalesRecord.
       */
+
     val salesRecordRDD =
       dataRDD.map(line => {
         val values = line.split(",")
