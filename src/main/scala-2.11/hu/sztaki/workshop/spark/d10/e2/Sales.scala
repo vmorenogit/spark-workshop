@@ -30,10 +30,14 @@ object Sales {
     /**
       * @todo[10] Calculate the total sales.
       */
+    val totalSales = salesRecordRDD.totalSales
+    println(totalSales)
 
     /**
       * @todo[11] Set up a discount of 0.1 and print out
       *           the new records.
       */
+    val discountRDD = salesRecordRDD.discount(0.1)
+    discountRDD.collect() foreach println
   }
 }
