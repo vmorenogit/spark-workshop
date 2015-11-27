@@ -1,0 +1,2 @@
+https://hadoopsummit.uservoice.com/forums/332061-hadoop-governance-security-deployment-and-operat/suggestions/10848366-advanced-execution-visualization-of-spark-jobs
+https://hadoopsummit.uservoice.com/forums/332079-the-future-of-apache-hadoop/suggestions/10848489-large-scale-stream-processing-in-the-hadoop-ecosys
