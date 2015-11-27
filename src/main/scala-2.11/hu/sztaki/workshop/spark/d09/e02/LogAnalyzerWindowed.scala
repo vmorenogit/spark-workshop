@@ -27,14 +27,18 @@ object LogAnalyzerWindowed {
       * @todo[12] Count the distinct IP addresses in a sliding window:
       * @hint Get the window size and slide duration from parsed options.
       */
+    val ipDStream = accessLogsDStream.map(_.getIpAddress)
+    val ipAddressRequestCount = ipDStream.countByValueAndWindow(
+      opts.windowDuration, opts.slideDuration
+    )
 
     /**
-      * @todo[13] Save the result as a text-file.
+      * @todo[13-HM] Save the result as a text-file.
       * @hint Get the output directory from the options.
       */
 
     /**
-      * @todo[14] Save the result as a hadoop file.
+      * @todo[14-HM] Save the result as a hadoop file.
       * @hint Get the output directory from the options.
       * @hint For that, you need to transform the IP and count pair into Hadoop's types.
       *       What would be the two types?
@@ -44,21 +48,21 @@ object LogAnalyzerWindowed {
     /**
       * @todo[15] Count the total access logs in a sliding window.
       */
-
+    accessLogsDStream.countByWindow(opts.windowDuration, opts.slideDuration)
 
     /**
-      * @todo[16] Print out the result of [15] and [14].
+      * @todo[16-HM] Print out the result of [15] and [14].
       */
 
 
     /**
-      * @todo[16] Redefine `accessLogsDStream` as a new windowed DStream.
+      * @todo[16-HM] Redefine `accessLogsDStream` as a new windowed DStream.
       * @hint Use window duration and slide duration from options.
       */
 
 
     /**
-      * @todo[17] Count the response codes.
+      * @todo[17-HM] Count the response codes.
       *           Use transform method with `responseCodeCount`.
       *           Print them also.
       */
@@ -69,5 +73,13 @@ object LogAnalyzerWindowed {
       *           Use DStream.`reduceByKeyAndWindow`.
       *           Print out the results.
       */
+    val ipPairDStream = accessLogsDStream.map(entry => (entry.getIpAddress, 1))
+    ipPairDStream.reduceByKeyAndWindow(
+      _ + _,
+      _ - _,
+      opts.windowDuration,
+      opts.slideDuration
+    )
+    .print()
   }
 }

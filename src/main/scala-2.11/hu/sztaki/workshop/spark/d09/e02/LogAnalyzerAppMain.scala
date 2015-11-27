@@ -88,7 +88,7 @@ object LogAnalyzerAppMain {
     /**
       * @todo Complete function!
       */
-    // LogAnalyzerWindowed.processAccessLogs(accessLogDStream, opts)
+    LogAnalyzerWindowed.processAccessLogs(accessLogDStream, opts)
 
     ssc.start()
     ssc.awaitTermination()
