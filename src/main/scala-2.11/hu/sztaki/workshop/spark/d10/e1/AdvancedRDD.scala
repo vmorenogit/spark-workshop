@@ -17,24 +17,32 @@ with Serializable {
     * @todo[1] Implement a function that drops the first n elements
     *          from each partition.
     */
-  def dropPartition(n: Int): RDD[T] = ???
+  def dropPartition(n: Int): RDD[T] = {
+    self.mapPartitions(it => it.drop(n))
+  }
 
   /**
     * @todo[2] Implement a function that drops elements from each partition
     *          while a certain condition applies.
     */
-  def dropWhilePartition(f: T => Boolean): RDD[T] = ???
+  def dropWhilePartition(f: T => Boolean): RDD[T] = {
+    self.mapPartitions(it => it.dropWhile(f))
+  }
 
   /**
     * @todo[3] Implement the `filterNot` function.
     */
-  def filterNot(f: T => Boolean): RDD[T] = ???
+  def filterNot(f: T => Boolean): RDD[T] = {
+    self.filter(!f(_))
+  }
 
   /**
     * @todo[4] Implement a function that takes elements from each partition
     *          while a certain condition applies.
     */
-  def takeWhile(f: T => Boolean): RDD[T] = ???
+  def takeWhile(f: T => Boolean): RDD[T] = {
+    self.mapPartitions(_.takeWhile(f))
+  }
 }
 
 object AdvancedRDD {
@@ -64,8 +72,10 @@ object AdvancedRDD {
     * @todo[5] Implement the implicit conversion that converts a simple RDD
     *          to our AdvancedRDDFunctions.
     */
-  implicit def rddToAdvancedRDD[T](rdd: RDD[T])
-    (implicit t: ClassTag[T], ord: Ordering[T] = null): AdvancedRDDFunctions[T] = ???
+  implicit def TheNameDoesNotMatter[T](rdd: RDD[T])
+    (implicit t: ClassTag[T], ord: Ordering[T] = null): AdvancedRDDFunctions[T] = {
+    new AdvancedRDDFunctions[T](rdd)
+  }
 
   object RDDImplicits {
     implicit class RichRDD[T: ClassTag](rdd: RDD[T]) {
