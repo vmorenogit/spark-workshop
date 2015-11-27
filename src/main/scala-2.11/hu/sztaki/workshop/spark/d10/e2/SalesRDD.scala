@@ -4,8 +4,16 @@ import hu.sztaki.workshop.spark.d10.e4.DiscountRDD
 import org.apache.spark.rdd.RDD
 
 class SalesRDDFunctions(rdd: RDD[SalesRecord]) {
-  def totalSales = ???
-  def discount(discountPercentage:Double) = ???
+  def totalSales = {
+    rdd.map(_.itemValue).sum
+  }
+
+  /**
+   * @todo[HW-1]
+   */
+  def discount(discountPercentage:Double) = {
+
+  }
 }
 
 /**

@@ -37,7 +37,7 @@ object Sales {
       * @todo[11] Set up a discount of 0.1 and print out
       *           the new records.
       */
-    val discountRDD = salesRecordRDD.discount(0.1)
-    discountRDD.collect() foreach println
+    // val discountRDD = salesRecordRDD.discount(0.1)
+    // discountRDD.collect() foreach println
   }
 }
