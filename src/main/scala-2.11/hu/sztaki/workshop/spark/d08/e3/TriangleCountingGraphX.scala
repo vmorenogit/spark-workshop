@@ -15,16 +15,26 @@ object TriangleCountingGraphX {
     val edgeFile = args(0)
     val vertexFile = args(1)
 
-    // 1. Load the edges in canonical order
-    // and partition the graph for triangle count
+    // Load the edges in canonical order and partition the graph for triangle count
+    val graph = GraphLoader.edgeListFile(sc, edgeFile, true)
+      .partitionBy(PartitionStrategy.RandomVertexCut)
 
-    // 2. Find the triangle count for each vertex
-    // (usig GraphX)
+    // Find the triangle count for each vertex
+    val triCounts = graph.triangleCount().vertices
 
-    // 3. Join the triangle counts with the usernames
+    // Join the triangle counts with the usernames
+    val users = sc.textFile(vertexFile).map { line =>
+      val fields = line.split(",")
+      (fields(0).toLong, fields(1))
+    }
+    val triCountByUsername = users.join(triCounts).map { case (id, (username, tc)) =>
+      (username, tc)
+    }
 
-    // 4. Print the result
+    // Print the result
+    println(triCountByUsername.collect().mkString("\n"))
 
-    // 5. Get the total triangle count
+    // Get the total triangle count
+    println(s"total triangles: ${triCounts.values.sum() / 3}")
   }
 }

@@ -1,31 +1,24 @@
 package hu.sztaki.workshop.spark.d10.e2
 
 import hu.sztaki.workshop.spark.d10.e2.SalesRDDFunctions.addCustomFunctions
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.SparkContext
 
 object Sales {
   def main(args: Array[String]) {
     /**
       * @todo[8] Create Spark context, configuration, read from text file.
       */
-    val sc = new SparkContext(
-      new SparkConf()
-        .setAppName("Sales")
-        .setMaster("local")
-    )
-
-    val dataRDD = sc.textFile(args(0))
+    val sc = new SparkContext(args(0), "Sales extended")
+    val dataRDD = sc.textFile(args(1))
 
     /**
       * @todo[9] Transform lines to SalesRecord.
       */
-
-    val salesRecordRDD =
-      dataRDD.map(line => {
-        val values = line.split(",")
-        new SalesRecord(values(0), values(1),
-          values(2), values(3).toDouble)
-      })
+    val salesRecordRDD = dataRDD.map(row => {
+      val colValues = row.split(",")
+      new SalesRecord(colValues(0),colValues(1),
+        colValues(2),colValues(3).toDouble)
+    })
 
     /**
       * @todo[10] Calculate the total sales.
@@ -37,7 +30,7 @@ object Sales {
       * @todo[11] Set up a discount of 0.1 and print out
       *           the new records.
       */
-    // val discountRDD = salesRecordRDD.discount(0.1)
-    // discountRDD.collect() foreach println
+    val discountRDD = salesRecordRDD.discount(0.1)
+    println(discountRDD.collect().toList)
   }
 }

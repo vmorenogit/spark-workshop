@@ -13,12 +13,13 @@ public class Reducer extends org.apache.hadoop.mapreduce.Reducer<Text, Rank, Tex
     /**
      * @todo Implement method.
      * @hint We receive 2 different types of data associated with a given key:
-     *       1) Key's PageRank values (doubles) that we need to sum together.
+     *       1) Key's PageRank values (doubles) that we need to sum together,
+     *          which is actually the votes for this key.
      *       2) Outlinks from this key.
      * @hint All you need to do is to concatenate and write out in a correct format.
      */
     @Override
-    protected void reduce(Text key, Iterable<Rank> values, Context context) throws IOException, InterruptedException {
+    protected void reduce(Text key, Iterable<Rank> values, Context context){
         Double sum = 0.0;
         ArrayList<String> outlinks = new ArrayList<String>();
 
@@ -39,6 +40,10 @@ public class Reducer extends org.apache.hadoop.mapreduce.Reducer<Text, Rank, Tex
             val += outlink;
         }
 
+        try {
             context.write(key, new Text(val));
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

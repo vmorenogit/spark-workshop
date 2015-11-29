@@ -15,21 +15,28 @@ object ConnectedComponentsImpl {
     val edgeFile = args(0)
     val vertexFile = args(1)
 
-    // 1. Load graph with GraphLoader.edgeListFile
+    // Load graph with GraphLoader.edgeListFile
     val graph = GraphLoader.edgeListFile(sc, edgeFile)
 
-    // 2. Let the vertex attribute be
-    // the vertexId itself
     val ccGraph = graph.mapVertices { case (vid, _) => vid }
+    def sendMessage(edge: EdgeTriplet[VertexId, Int]): Iterator[(VertexId, VertexId)] = {
+      if (edge.srcAttr < edge.dstAttr) {
+        Iterator((edge.dstId, edge.srcAttr))
+      } else if (edge.srcAttr > edge.dstAttr) {
+        Iterator((edge.srcId, edge.dstAttr))
+      } else {
+        Iterator.empty
+      }
+    }
 
-    // 3. Create a function that sends
-    // a vertex attribute message along
-    // an edge: from the vertex with the higher
-    // attribute to the one with lower.
-    def sendMessage(edge: EdgeTriplet[VertexId, Int]):
-      Iterator[(VertexId, VertexId)] = null
+    val initialMessage = Long.MaxValue
 
-    // 4. Use pregel with this send message to
-    // propagate maximum value iteratively.
+    val cc = Pregel(ccGraph, initialMessage, activeDirection = EdgeDirection.Either)(
+      vprog = (id, attr, msg) => math.min(attr, msg),
+      sendMsg = sendMessage,
+      mergeMsg = (a, b) => math.min(a, b))
+
+    cc.vertices.collect().foreach(println)
+
   }
 }

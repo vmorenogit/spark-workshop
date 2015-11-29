@@ -14,44 +14,46 @@ object TriangleCountImplementation {
 
     val edgeFile = args(0)
 
-    // 1. Load graph with GraphLoader.edgeListFile
-    val graph =
-      GraphLoader.edgeListFile(sc, edgeFile,
-        canonicalOrientation = true)
+    // Load graph with GraphLoader.edgeListFile
+    val graph = GraphLoader.edgeListFile(sc, edgeFile, canonicalOrientation = true)
 
-    graph.edges.collect().foreach(println)
+    // Create undirected graph where edges are like src < dst
+    val undirEdges = graph.edges.union(graph.edges.reverse).distinct()
 
-    // 2. Create undirected graph where
-    // edges are like src < dst
-    val undirEdges =
-      graph.edges.union(graph.edges.reverse)
-      .distinct()
+    val undirGraph = Graph.fromEdges(undirEdges, defaultValue = 0)
 
-    val undirGraph = Graph.fromEdges(undirEdges,
-      defaultValue = 0
-    )
+    val neighbours = undirGraph.collectNeighbors(EdgeDirection.Out)
 
-    val neigh = undirGraph
-      .collectNeighbors(EdgeDirection.Either)
-
-    val joined = graph.outerJoinVertices(neigh) {
-      case (vId, pr, Some(arrNeigh)) =>
-        arrNeigh
+    val graphWithNeighborAttr = undirGraph
+      .mapVertices { case (vId, v) => Array[Long]() }
+      .joinVertices(neighbours) { case (vId, v, neigh) =>
+      neigh.map { case (neighId, _) => neighId }
     }
 
-    joined.vertices.collect().foreach(println)
+    graphWithNeighborAttr.vertices.collect()
+      .foreach(x => println(x._1 + ": " + x._2.mkString(" ")))
+    println()
 
-    // 3. Send from src to dst all neighbor
-    // that satisfies neighbor < src < dst
-//    undirGraph.aggregateMessages(
-//      ec => {
-//
-//      },
-//
-//    )
+    // Send from src to dst all neighbor that satisfies neighbor < src < dst
+    val sndNeighbors = graphWithNeighborAttr.aggregateMessages[Array[Long]](
+      triplet => {
+        if (triplet.srcId < triplet.dstId) {
+          val smallerNeighs = triplet.srcAttr.filter(_ < triplet.srcId)
+          triplet.sendToDst(smallerNeighs)
+        }
+      }
+      , (s1, s2) => s1 ++ s2
+    )
 
+    val triCount = graphWithNeighborAttr.outerJoinVertices(sndNeighbors) {
+      case (vId, neighs, sndNeighs) =>
+        sndNeighs match {
+          case Some(ns) => neighs.intersect(ns).length
+          case None => 0
+        }
+    }
+      .vertices.values.sum()
 
-    // 4. Intersect the got vertexIds with
-    // the neighbors. You get the triangle count :)
+    println(s"num of triangles: ${triCount}")
   }
 }

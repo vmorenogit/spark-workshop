@@ -6,9 +6,7 @@ object SparkShell {
 
   def main(args: Array[String]) {
 
-    val sc = new SparkContext(new SparkConf()
-      .setAppName("Spark Shell")
-      .setMaster("local[2]"))
+    val sc = new SparkContext(new SparkConf().setAppName("Spark Shell"))
 
     val data = 1 to 1000
 
@@ -17,8 +15,6 @@ object SparkShell {
     val filteredData = distData.filter(_ < 10)
 
     val output = filteredData.collect()
-
-    output.foreach(println)
 
   }
 }

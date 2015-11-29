@@ -1,7 +1,5 @@
 package hu.sztaki.workshop.spark.d09.e02
 
-import hu.sztaki.workshop.hadoop.d02.ApacheAccessLog
-import hu.sztaki.workshop.spark.d03.e3.AdvancedRDD.RichRDD
 import org.apache.spark.streaming.dstream._
 
 /**
@@ -21,22 +19,19 @@ object LogAnalyzerTotal {
     /**
       * @todo[7] Count the frequency for each IP address.
       */
-    val ipDStream = accessLogsDStream
-      .map(entry => (entry.getIpAddress, 1))
-      .reduceByKey(_ + _)
-
-    ipDStream.print()
+    val ipDStream = accessLogsDStream.map(entry => (entry.getIpAddress, 1))
+    val ipCountsDStream = ipDStream.reduceByKey((x, y) => x + y)
+    ipCountsDStream.print()
 
     /**
       * @todo[8] Do the same:
       *          Count the frequency for each IP address,
       *          but by using DStream.`transform` method.
       */
-    val ipRawDStream = accessLogsDStream.transform {
-      rdd =>
-        rdd.countEachElement
+    val ipRawDStream = accessLogsDStream.transform{
+      rdd => rdd.map(accessLog => (accessLog.getIpAddress, 1)).reduceByKey(
+        (x, y) => x + y)
     }
-
     ipRawDStream.print()
 
     /**
@@ -44,12 +39,9 @@ object LogAnalyzerTotal {
       *          but also show the number of transfers per IP address.
       *          The output should be: ({IP}, ({bytes}, {number_of_transfers}))
       */
-    val ipBytesDStream = accessLogsDStream
-      .map(entry => (entry.getIpAddress, entry.getContentSize))
+    val ipBytesDStream = accessLogsDStream.map(entry => (entry.getIpAddress, entry.getContentSize))
     val ipBytesSumDStream = ipBytesDStream.reduceByKey(_ + _)
-    val ipBytesRequestCountDStream = ipDStream
-      .join(ipBytesSumDStream)
-
+    val ipBytesRequestCountDStream = ipRawDStream.join(ipBytesSumDStream)
     ipBytesRequestCountDStream.print()
 
     /**
@@ -57,11 +49,8 @@ object LogAnalyzerTotal {
       * @hint Map to a key-value pair, then use DStream.`updateStateByKey` with the
       *       `computeRunningSum` method of this class
       */
-      val responseCodeDStream = accessLogsDStream
-        .map(entry => (entry.getResponseCode, 1L))
-      val responseCodeCountDStream = responseCodeDStream
-        .updateStateByKey(computeRunningSum)
-
+    val responseCodeDStream = accessLogsDStream.map(log => (log.getResponseCode, 1L))
+    val responseCodeCountDStream = responseCodeDStream.updateStateByKey(computeRunningSum)
     responseCodeCountDStream.print()
   }
 }

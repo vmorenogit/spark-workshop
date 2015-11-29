@@ -4,16 +4,8 @@ import hu.sztaki.workshop.spark.d10.e4.DiscountRDD
 import org.apache.spark.rdd.RDD
 
 class SalesRDDFunctions(rdd: RDD[SalesRecord]) {
-  def totalSales = {
-    rdd.map(_.itemValue).sum
-  }
-
-  /**
-   * @todo[HW-1]
-   */
-  def discount(discountPercentage:Double) = {
-
-  }
+  def totalSales = rdd.map(_.itemValue).sum
+  def discount(discountPercentage:Double) = new DiscountRDD(rdd,discountPercentage)
 }
 
 /**
@@ -36,7 +28,6 @@ object SalesRDDFunctions {
     * @todo[7] Create our own implicit function that takes an RDD of SalesRecord
     *          and creates our own SalesRDDFunctions type.
     */
-  implicit def addCustomFunctions(rdd: RDD[SalesRecord]): SalesRDDFunctions = {
-    new SalesRDDFunctions(rdd)
-  }
+  implicit def addCustomFunctions(rdd: RDD[SalesRecord]): SalesRDDFunctions = new
+      SalesRDDFunctions(rdd)
 }

@@ -10,20 +10,17 @@ object StreamingLogInput {
     /**
       * @todo[1] Create SparkConf.
       */
-    val conf = new SparkConf()
-      .setAppName("Bla bla error app")
-      .setMaster("local")
+    val conf = new SparkConf().setAppName("StreamingLogInput")
     /**
       * @todo[2] Create StreamingContext with a batch duration of 1 second.
       */
-    val ssc = new StreamingContext(conf, Seconds(5))
-
+    val ssc = new StreamingContext(conf, Seconds(1))
     /**
       * @todo[2] Create a DStream from all the input on port 7777.
       * @hint You need to create a socket listener.
       */
-    val input = ssc.socketTextStream("localhost", 9999)
-    val errorLines = processLines(input)
+    val lines = ssc.socketTextStream("localhost", 7777)
+    val errorLines = processLines(lines)
 
     /**
       * @todo[4] Print out the DStream.
@@ -44,7 +41,6 @@ object StreamingLogInput {
       * @todo[7] Stop streaming context.
       */
     ssc.stop()
-
   }
   def processLines(lines: DStream[String]) = {
     /**

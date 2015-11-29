@@ -40,7 +40,7 @@ class FeederActor extends Actor {
     override def run() {
       while (true) {
         Thread.sleep(500)
-        receivers.foreach(rec => rec ! makeMessage())
+        receivers.foreach(_ ! makeMessage)
       }
     }
   }.start()

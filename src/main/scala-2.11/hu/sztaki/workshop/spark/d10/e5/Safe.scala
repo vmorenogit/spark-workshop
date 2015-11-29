@@ -11,6 +11,7 @@ object Safe {
       * @todo[20] Explain this use-case for me. What happens here?
       * @future Use safe.
       */
+    sc.addSparkListener(new Listener)
     val cleanData = sc
       .parallelize((1 to 100000000).toSeq, 2)
       .map(x => Math.random())

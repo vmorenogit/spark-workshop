@@ -15,12 +15,21 @@ object ConnectedComponentsGraphX {
     val edgeFile = args(0)
     val vertexFile = args(1)
 
-    // 1. Load graph with GraphLoader.edgeListFile
+    // Load graph with GraphLoader.edgeListFile
+    val graph = GraphLoader.edgeListFile(sc, edgeFile)
 
-    // 2. Find the connected components
+    // Find the connected components
+    val cc = graph.connectedComponents().vertices
 
-    // 3. Join the connected components with the usernames
-
-    // 4. Print the result
+    // Join the connected components with the usernames
+    val users = sc.textFile(vertexFile).map { line =>
+      val fields = line.split(",")
+      (fields(0).toLong, fields(1))
+    }
+    val ccByUsername = users.join(cc).map {
+      case (id, (username, cc)) => (username, cc)
+    }
+    // Print the result
+    println(ccByUsername.collect().mkString("\n"))
   }
 }

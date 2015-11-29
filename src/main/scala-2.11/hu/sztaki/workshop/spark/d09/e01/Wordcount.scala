@@ -5,7 +5,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object Wordcount {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("Streaming wordcount").setMaster("local")
+    val conf = new SparkConf().setAppName("Streaming wordcount")
     val ssc = new StreamingContext(conf, Seconds(1))
     val lines = ssc.socketTextStream("localhost", 9999)
 

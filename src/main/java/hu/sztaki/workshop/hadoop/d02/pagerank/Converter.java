@@ -51,7 +51,7 @@ public class Converter extends Configured implements Tool {
         Job job = Job.getInstance(getConf());
         job.getConfiguration().set("mapreduce.output.textoutputformat.separator", "#");
 
-        job.setJobName("Convert graph-format (neighbour list) for PageRank");
+        job.setJobName("Convert graph-format for PageRank");
         job.setJarByClass(Converter.class);
 
         SequenceFileInputFormat.setInputPaths(job, new Path(args[0]));

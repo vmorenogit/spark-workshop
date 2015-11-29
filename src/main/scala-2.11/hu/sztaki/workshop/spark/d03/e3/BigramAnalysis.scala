@@ -83,27 +83,44 @@ object BigramAnalysis{
       * @todo[9*] Determine the frequency of bigrams with the same start.
       * @hint Use `BigramsWithSameStart` and aggregateByKey also.
       */
-    // val startingWordBigram = _
+    val startingWordBigram =  bigramsRDD.map(bg => (bg.firstWord, bg))
 
-    // val startingWordAllBigrams = _
+    val startingWordAllBigrams = startingWordBigram
+      .aggregateByKey(BigramsWithSameStart("", List()))(
+        (acc, bigram) => BigramsWithSameStart.apply(bigram),
+        (bgs1, bgs2) => bgs1.merge(bgs2))
 
-    // val startWordBGCount = _
+    val startWordBGCount = startingWordAllBigrams.map(a => (a._1, a._2.bigramsCount))
 
-    // val startWordBGAndBGCount = _
+    val startWordBGAndBGCount = bgOccrCount.map(bg => (bg._1.firstWord, (bg._1, bg._2)))
 
     //  [(String, ((String, Int)), Int)]
     //  startWord - BG           - BG count    - bgs starting with word
     //  a._1      - a._2._1._1   - a._2._1._2  - a._2._2
-    // val startWordBGbGCountStartWordBgsCount = _
+    val startWordBGbGCountStartWordBgsCount = startWordBGAndBGCount.join(startWordBGCount).map(a => (a._1, a._2._1._1, a._2._1._2, a._2._2))
+
+    startWordBGbGCountStartWordBgsCount.cache()
+    startWordBGbGCountStartWordBgsCount foreach println
 
     /**
-      * @todo[10] What are the five most frequent words following the word "light"?
+      * @todo[10] What are the five most frequent words following the word "for"?
       * @todo[11] What is the frequency of observing each word?
       */
+    startWordBGbGCountStartWordBgsCount
+      .filter(a => a._1.equals("for"))
+      .map(a => (a._1, a._2, a._4/a._3.toFloat))
+      .sortBy(a => a._3)
+      .take(5) foreach println
+
+    startWordBGbGCountStartWordBgsCount
+      .filter(a => a._1.equals("late"))
+      .map(a => (a._1, a._2, a._4/a._3.toFloat))
+      .sortBy(a => a._3)
+      .take(5) foreach println
 
     /**
       * If there are a total of N words in your vocabulary,
-      * then there are a total of N2 possible values for F(Wn|Wn-1)—in theory,
+      * then there are a total of N^2 possible values for F(Wn|Wn-1)—in theory,
       * every word can follow every other word (including itself).
       * @todo[12] What fraction of these values are non-zero?
       * In other words, what proportion of all possible events are actually observed?
@@ -112,13 +129,14 @@ object BigramAnalysis{
       * This means that N-100 words are never seen after "happy".
       * (Perhaps the distribution of happiness is quite limited?).
       */
-    // val allWords = _
-    // val allDistinctWordsCount = _
-    // val totalPossibleCombinations = _
+    val allWords = linesRDD.flatMap(line => line.split(" "))
+    val allDistinctWordsCount = allWords.distinct().count()
+    val totalPossibleCombinations = allDistinctWordsCount * allDistinctWordsCount
 
-    // val allDistinctBigrams = _
+    val allDistinctBigrams = bigramsRDD.distinct().count()
 
-    // val fractionOfBgsFoundOutOFTotalPossible = _
+    val fractionOfBgsFoundOutOFTotalPossible = allDistinctBigrams / totalPossibleCombinations.toFloat
+    println(fractionOfBgsFoundOutOFTotalPossible)
   }
 }
 

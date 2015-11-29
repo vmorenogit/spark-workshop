@@ -11,7 +11,13 @@ object AdvancedRDD {
     def countEachElement = {
       rdd
         .map(elm => (elm, 1))
-        .reduceByKey(_ + _)
+        // "Just for fun!" (Gábor)
+        // .aggregateByKey(0)(_ + _, _ + _)
+        .combineByKey[Int](
+          (x : Int) => x,
+          (x : Int, y : Int) => x + y,
+          (x : Int, y : Int) => x + y,
+          10)
     }
 
     def countWhere(f: T => Boolean): Long = {

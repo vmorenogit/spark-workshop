@@ -11,7 +11,12 @@ class DiscountRDD(prev:RDD[SalesRecord], discountPercentage:Double)
     * @todo[17] The compute should compute a SalesRecord by applying
     *           the specified disccount.
     */
-  override def compute(split: Partition, context: TaskContext): Iterator[SalesRecord] = ???
+  override def compute(split: Partition, context: TaskContext): Iterator[SalesRecord] =  {
+    firstParent[SalesRecord].iterator(split, context).map(salesRecord => {
+      val discount = salesRecord.itemValue*discountPercentage
+      new SalesRecord(salesRecord.transactionId,
+        salesRecord.customerId,salesRecord.itemId,discount)
+    })}
 
   override protected def getPartitions: Array[Partition] =
     firstParent[SalesRecord].partitions

@@ -21,7 +21,7 @@ public class Mapper extends org.apache.hadoop.mapreduce.Mapper<Text, Text, Text,
      *       1) key's rank,
      *       2) and key with the outlink.
      */
-    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
+    public void map(Text key, Text value, Context context){
         StringTokenizer st = new StringTokenizer(value.toString(), Pagerank.separator);
         int degree = st.countTokens();
         Double rank;
@@ -39,6 +39,7 @@ public class Mapper extends org.apache.hadoop.mapreduce.Mapper<Text, Text, Text,
         Rank rankValue = new Rank(new DoubleWritable(rank));
         Rank outlinkValue;
 
+        try {
             while (st.hasMoreTokens()){
                 String outlink = st.nextToken();
                 outlinkValue = new Rank(new Text(outlink));
@@ -46,5 +47,8 @@ public class Mapper extends org.apache.hadoop.mapreduce.Mapper<Text, Text, Text,
                 context.write(new Text(outlink), rankValue); //write outlink with partial rank component
                 context.write(key, outlinkValue); //write key and its outlink
             }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

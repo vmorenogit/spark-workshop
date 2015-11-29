@@ -15,12 +15,13 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 /**
  * @exercise Implement the famous PageRank algorithm.
- * @input /workshop/web-google (Which is a KeyValueTextInputFormat)
+ * @input /resources/web-google-in.txt (Which is a KeyValueTextInputFormat)
  * @hint Check the input file and set configuration
  *       mapreduce.input.keyvaluelinerecordreader.key.value.separator according
  *       to the delimiter.
@@ -83,6 +84,8 @@ public class Pagerank extends Configured implements Tool {
     }
 
     public static void main(String[] args) throws Exception {
+        LOG.setLevel(Level.INFO);
+        LOG.info("Starting main.");
         System.exit(ToolRunner.run(new Pagerank(), args));
     }
 }

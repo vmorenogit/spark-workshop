@@ -18,7 +18,7 @@ with Serializable {
     *          from each partition.
     */
   def dropPartition(n: Int): RDD[T] = {
-    self.mapPartitions(it => it.drop(n))
+    self.mapPartitions(_.drop(n))
   }
 
   /**
@@ -26,7 +26,7 @@ with Serializable {
     *          while a certain condition applies.
     */
   def dropWhilePartition(f: T => Boolean): RDD[T] = {
-    self.mapPartitions(it => it.dropWhile(f))
+    self.mapPartitions(_.dropWhile(f))
   }
 
   /**
@@ -72,7 +72,7 @@ object AdvancedRDD {
     * @todo[5] Implement the implicit conversion that converts a simple RDD
     *          to our AdvancedRDDFunctions.
     */
-  implicit def TheNameDoesNotMatter[T](rdd: RDD[T])
+  implicit def rddToAdvancedRDD[T](rdd: RDD[T])
     (implicit t: ClassTag[T], ord: Ordering[T] = null): AdvancedRDDFunctions[T] = {
     new AdvancedRDDFunctions[T](rdd)
   }
@@ -82,13 +82,19 @@ object AdvancedRDD {
       /**
         * @todo[6.1] Implement the logic of wordcount in a generic way.
         */
-      def countEachElement = ???
+      def countEachElement = {
+        rdd
+          .map(element => (element, 1))
+          .reduceByKey((value1, value2) => value1 + value2)
+      }
 
       /**
         * @todo[6.2] Implement a function that counts each element on which
         *          a certain condition applies.
         */
-      def countWhere(f: T => Boolean): Long = ???
+      def countWhere(f: T => Boolean): Long = {
+        rdd.filter(f).count()
+      }
     }
   }
 }
